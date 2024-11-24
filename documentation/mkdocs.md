@@ -29,9 +29,8 @@ docs/
 ├── reference/
 ├── scripts/
 │   └── gen_ref_pages.py
-├── usage/
-│   └── installation.md
-│   └── ...
+├── installation.md
+├── usage.md
 ├── index.md
 ```
 

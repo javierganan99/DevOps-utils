@@ -156,3 +156,46 @@ Once the documentation is generated, it can be deployed to a web server or hoste
 ```bash
 mkdocs gh-deploy
 ```
+
+Or you can deploy it using a github action each time you push to the `main` branch:
+
+```yaml
+name: Deploy MkDocs Documentation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocstrings[python] mkdocs-autorefs mkdocs-material mkdocs-gen-files
+
+      - name: Generate API Reference Documentation
+        run: | # Generate the reference documentation
+          python docs/scripts/gen_ref_pages.py
+          echo "Generated reference documentation."
+
+      - name: Build MkDocs site
+        run: mkdocs build # Generates the static site in the ./site folder
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          publish_dir: ./site
+```
